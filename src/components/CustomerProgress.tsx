@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PencilIcon, TrashIcon, PlusIcon, ChevronUpIcon, ChevronDownIcon, SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
+import CopilotLogo from '../assets/Microsoft-Copilot-Logo.png';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -15,12 +16,18 @@ interface Opportunity {
   partner: string;      // Microsoft Partner name
 }
 
+interface Stakeholder {
+  name: string;
+  role: string;
+}
+
 interface Customer {
   id: string;
   name: string;
   totalUsers: number;
   adoptedUsers: number;
   opportunities: Opportunity[];
+  stakeholders: Stakeholder[];
 }
 
 const OPPORTUNITY_COLORS = [
@@ -75,6 +82,10 @@ export default function CustomerProgress() {
           confidence: 'Upside',
           partner: 'Data #3'
         }
+      ],
+      stakeholders: [
+        { name: 'Sophie Turner', role: 'IT Director' },
+        { name: 'James Lee', role: 'Head of Operations' }
       ]
     },
     {
@@ -101,6 +112,9 @@ export default function CustomerProgress() {
           confidence: 'Upside',
           partner: 'Avanade'
         }
+      ],
+      stakeholders: [
+        { name: 'Olivia Chen', role: 'Digital Transformation Lead' }
       ]
     },
     {
@@ -118,6 +132,10 @@ export default function CustomerProgress() {
           confidence: 'Committed',
           partner: 'Microsoft Direct'
         }
+      ],
+      stakeholders: [
+        { name: 'Liam Patel', role: 'CIO' },
+        { name: 'Emma Wilson', role: 'Business Analyst' }
       ]
     },
     {
@@ -135,6 +153,9 @@ export default function CustomerProgress() {
           confidence: 'Commit with risk',
           partner: 'Generation-e'
         }
+      ],
+      stakeholders: [
+        { name: 'Lucas Brown', role: 'IT Manager' }
       ]
     },
     {
@@ -152,6 +173,10 @@ export default function CustomerProgress() {
           confidence: 'Upside',
           partner: 'Engage Squared'
         }
+      ],
+      stakeholders: [
+        { name: 'Mia Robinson', role: 'Head of Engineering' },
+        { name: 'Noah Smith', role: 'Project Manager' }
       ]
     },
     {
@@ -169,6 +194,9 @@ export default function CustomerProgress() {
           confidence: 'Commit with risk',
           partner: 'Increment'
         }
+      ],
+      stakeholders: [
+        { name: 'Ava Martin', role: 'Operations Lead' }
       ]
     },
     {
@@ -186,6 +214,10 @@ export default function CustomerProgress() {
           confidence: 'Upside',
           partner: 'Data #3'
         }
+      ],
+      stakeholders: [
+        { name: 'Ethan Clark', role: 'Sustainability Officer' },
+        { name: 'Grace Evans', role: 'IT Business Partner' }
       ]
     },
     {
@@ -203,6 +235,9 @@ export default function CustomerProgress() {
           confidence: 'Upside',
           partner: 'Telstra'
         }
+      ],
+      stakeholders: [
+        { name: 'Benjamin Scott', role: 'Head of Customer Service' }
       ]
     },
     {
@@ -413,7 +448,7 @@ export default function CustomerProgress() {
     direction: 'asc'
   });
 
-  const [groupBy, setGroupBy] = useState<GroupBy>('none');
+  const [groupBy, setGroupBy] = useState<GroupBy>('quarter');
   const [selectedPartner, setSelectedPartner] = useState<string>('all');
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -437,7 +472,8 @@ export default function CustomerProgress() {
       name: 'New Customer',
       totalUsers: 0,
       adoptedUsers: 0,
-      opportunities: []
+      opportunities: [],
+      stakeholders: []
     };
     setCustomers([...customers, newCustomer]);
     setEditingCustomer(newCustomer);
@@ -755,8 +791,8 @@ export default function CustomerProgress() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <div className="flex items-center space-x-2">
-              <img src="https://img.icons8.com/color/48/000000/microsoft.png" alt="Microsoft" className="h-8 w-8" />
-              <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-[#0078D4]'}`}>SME&C Copilot Customer Success Dashboard</h1>
+              <img src={CopilotLogo} alt="Microsoft 365 Copilot" className="h-10 sm:h-12 md:h-16 lg:h-20 w-auto max-w-xs object-contain" />
+              <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-[#0078D4]'}`}>MyFrontiers</h1>
             </div>
             <p className={`mt-2 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Track Copilot adoption and revenue potential across your customer base
@@ -827,12 +863,12 @@ export default function CustomerProgress() {
                 <option value="opportunityArr-desc">Opportunity ARR (High to Low)</option>
               </select>
             </div>
-            <button
+            {/* <button
               onClick={addCustomer}
               className="px-4 py-2 bg-[#0078D4] text-white rounded-lg hover:bg-[#106EBE] transition-colors"
             >
               Add Customer
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -942,7 +978,7 @@ export default function CustomerProgress() {
               );
               
               return (
-                <div key={customer.id} className="mb-6 last:mb-0">
+                <div key={customer.id} className="mb-10 last:mb-0 pb-8 border-b border-gray-200 last:border-b-0">
                   {editingCustomer?.id === customer.id ? (
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
@@ -992,7 +1028,18 @@ export default function CustomerProgress() {
                   ) : (
                     <>
                       <div className="flex justify-between items-center mb-2">
-                        <h3 className="text-lg font-semibold text-[#0078D4]">{customer.name}</h3>
+                        <div className="flex items-center space-x-2">
+                          <h3 className="text-lg font-semibold text-[#0078D4]">{customer.name}</h3>
+                          {customer.stakeholders && customer.stakeholders.length > 0 && (
+                            <span className={isDarkMode ? "text-white" : "text-gray-500"}>
+                              {customer.stakeholders.map((s, i) => (
+                                <span key={i} className="ml-1 first:ml-0">
+                                  {s.name} ({s.role}){i !== customer.stakeholders.length - 1 && <span>,</span>}
+                                </span>
+                              ))}
+                            </span>
+                          )}
+                        </div>
                         <div className="flex items-center space-x-4">
                           <div className="text-right">
                             <div className="text-sm text-gray-600">
@@ -1007,7 +1054,7 @@ export default function CustomerProgress() {
                               +${potentialRevenue.toLocaleString()} potential ARR
                             </div>
                           </div>
-                          <button
+                          {/* <button
                             onClick={() => handleEdit(customer)}
                             className="text-gray-400 hover:text-[#0078D4]"
                           >
@@ -1018,7 +1065,7 @@ export default function CustomerProgress() {
                             className="text-gray-400 hover:text-[#F25022]"
                           >
                             <TrashIcon className="h-5 w-5" />
-                          </button>
+                          </button> */}
                         </div>
                       </div>
                       <div className="relative h-8 bg-gray-200 rounded-full overflow-visible flex">
@@ -1046,21 +1093,17 @@ export default function CustomerProgress() {
                             >
                               <div className="hidden group-hover:block absolute z-50 left-1/2 -translate-x-1/2 -top-2 transform -translate-y-full bg-white text-gray-900 text-xs rounded shadow-lg p-2 min-w-[200px]">
                                 <div className="font-semibold mb-1 text-[#FFB900]">{opportunity.id}</div>
-                                <div className="text-gray-600">{opportunity.description}</div>
+                                <div className={isDarkMode ? "text-white" : "text-gray-600"}>{opportunity.description}</div>
                                 <div className="mt-1">
-                                  <span className="text-[#FFB900] font-medium">${opportunityRevenue.toLocaleString()}</span>
+                                  <span className={isDarkMode ? "text-[#ffe066] font-medium" : "text-[#FFB900] font-medium"}>
+                                    ${opportunityRevenue.toLocaleString()}
+                                  </span>
                                   <span className="text-gray-500"> annual revenue</span>
                                 </div>
                                 <div className="text-gray-500 mb-2">{opportunity.seats} Copilot seats</div>
-                                <div className="text-gray-500">
-                                  Close: {opportunity.closeDate}
-                                </div>
-                                <div className="text-gray-500">
-                                  Partner: {opportunity.partner}
-                                </div>
-                                <div className={`text-${confidenceColor} font-medium`}>
-                                  Confidence: {opportunity.confidence}
-                                </div>
+                                <div className={isDarkMode ? "text-white ml-2" : "text-gray-500 ml-2"}>{opportunity.closeDate}</div>
+                                <div className="text-gray-500">Partner: {opportunity.partner}</div>
+                                <div className={`text-${confidenceColor} font-medium`}>Confidence: {opportunity.confidence}</div>
                                 {opportunity.notes && (
                                   <div className="mt-2 pt-2 border-t border-gray-200">
                                     <div className="text-gray-500 text-xs italic">Latest Notes:</div>
@@ -1076,7 +1119,7 @@ export default function CustomerProgress() {
                         <div className="text-sm text-gray-600">
                           {progress.toFixed(1)}% ({customer.adoptedUsers}/{customer.totalUsers} Copilot seats)
                         </div>
-                        {customer.opportunities.length < 4 && (
+                        {/* {customer.opportunities.length < 4 && (
                           <button
                             onClick={() => addOpportunity(customer.id)}
                             className="text-sm text-[#0078D4] hover:text-[#106EBE] flex items-center"
@@ -1084,7 +1127,7 @@ export default function CustomerProgress() {
                             <PlusIcon className="h-4 w-4 mr-1" />
                             Add Opportunity
                           </button>
-                        )}
+                        )} */}
                       </div>
                       {editingOpportunity.customerId === customer.id && (
                         <div className="mt-4 p-4 bg-gray-50 rounded-lg">
@@ -1170,25 +1213,25 @@ export default function CustomerProgress() {
                               <div key={opportunity.id} className="flex justify-between items-center text-sm">
                                 <div className="flex items-center">
                                   <div className={`w-3 h-3 rounded-full ${OPPORTUNITY_COLORS[index]} mr-2`} />
-                                  <span className="text-gray-600">
+                                  <span className={isDarkMode ? "text-white" : "text-gray-600"}>
                                     {opportunity.id} - {opportunity.description} ({opportunity.seats} seats)
                                   </span>
                                   <span className="ml-2 text-[#FFB900] font-medium">
                                     ${dealSize.toLocaleString()} ARR
                                   </span>
-                                  <span className="ml-2 text-gray-500">
+                                  <span className={isDarkMode ? "text-white ml-2" : "text-gray-500 ml-2"}>
                                     | {opportunity.closeDate}
                                   </span>
                                   <span className={`ml-2 ${confidenceColor} font-medium`}>
                                     | {opportunity.confidence}
                                   </span>
                                 </div>
-                                <button
+                                {/* <button
                                   onClick={() => deleteOpportunity(customer.id, opportunity.id)}
                                   className="text-red-600 hover:text-red-700"
                                 >
                                   <TrashIcon className="h-4 w-4" />
-                                </button>
+                                </button> */}
                               </div>
                             );
                           })}
@@ -1209,7 +1252,7 @@ export default function CustomerProgress() {
               return (
                 <div key={partner} className="mb-8 last:mb-0">
                   <div className="flex items-center mb-4">
-                    <h2 className="text-3xl font-semibold text-red-600">
+                    <h2 className={isDarkMode ? "text-3xl font-semibold text-white" : "text-3xl font-semibold text-red-600"}>
                       {partner}
                     </h2>
                     <span className="ml-4 text-xl font-medium text-red-600">
@@ -1226,7 +1269,7 @@ export default function CustomerProgress() {
                     const potentialRevenue = calculatePotentialRevenue(customer.totalUsers, customer.adoptedUsers, customer.opportunities);
                     
                     return (
-                      <div key={customer.id} className="mb-6 last:mb-0">
+                      <div key={customer.id} className="mb-10 last:mb-0 pb-8 border-b border-gray-200 last:border-b-0">
                         {editingCustomer?.id === customer.id ? (
                           <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
@@ -1285,7 +1328,20 @@ export default function CustomerProgress() {
                         ) : (
                           <>
                             <div className="flex justify-between items-center mb-2">
-                              <h3 className="text-lg font-semibold text-[#0078D4]">{customer.name}</h3>
+                              <div className="flex items-center space-x-2">
+                                <div className="flex items-center space-x-2">
+                                  <h3 className="text-lg font-semibold text-[#0078D4]">{customer.name}</h3>
+                                  {customer.stakeholders && customer.stakeholders.length > 0 && (
+                                    <span className={isDarkMode ? "text-white" : "text-gray-500"}>
+                                      {customer.stakeholders.map((s, i) => (
+                                        <span key={i} className="ml-1 first:ml-0">
+                                          {s.name} ({s.role}){i !== customer.stakeholders.length - 1 && <span>,</span>}
+                                        </span>
+                                      ))}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
                               <div className="flex items-center space-x-4">
                                 <div className="text-right">
                                   <div className="text-sm text-gray-600">
@@ -1300,7 +1356,7 @@ export default function CustomerProgress() {
                                     +${potentialRevenue.toLocaleString()} potential ARR
                                   </div>
                                 </div>
-                                <button
+                                {/* <button
                                   onClick={() => handleEdit(customer)}
                                   className="text-gray-400 hover:text-[#0078D4]"
                                 >
@@ -1311,7 +1367,7 @@ export default function CustomerProgress() {
                                   className="text-gray-400 hover:text-[#F25022]"
                                 >
                                   <TrashIcon className="h-5 w-5" />
-                                </button>
+                                </button> */}
                               </div>
                             </div>
                             <div className="relative h-8 bg-gray-200 rounded-full overflow-visible flex">
@@ -1339,21 +1395,17 @@ export default function CustomerProgress() {
                                   >
                                     <div className="hidden group-hover:block absolute z-50 left-1/2 -translate-x-1/2 -top-2 transform -translate-y-full bg-white text-gray-900 text-xs rounded shadow-lg p-2 min-w-[200px]">
                                       <div className="font-semibold mb-1 text-[#FFB900]">{opportunity.id}</div>
-                                      <div className="text-gray-600">{opportunity.description}</div>
+                                      <div className={isDarkMode ? "text-white" : "text-gray-600"}>{opportunity.description}</div>
                                       <div className="mt-1">
-                                        <span className="text-[#FFB900] font-medium">${opportunityRevenue.toLocaleString()}</span>
+                                        <span className={isDarkMode ? "text-[#ffe066] font-medium" : "text-[#FFB900] font-medium"}>
+                                          ${opportunityRevenue.toLocaleString()}
+                                        </span>
                                         <span className="text-gray-500"> annual revenue</span>
                                       </div>
                                       <div className="text-gray-500 mb-2">{opportunity.seats} Copilot seats</div>
-                                      <div className="text-gray-500">
-                                        Close: {opportunity.closeDate}
-                                      </div>
-                                      <div className="text-gray-500">
-                                        Partner: {opportunity.partner}
-                                      </div>
-                                      <div className={`text-${confidenceColor} font-medium`}>
-                                        Confidence: {opportunity.confidence}
-                                      </div>
+                                      <div className={isDarkMode ? "text-white ml-2" : "text-gray-500 ml-2"}>{opportunity.closeDate}</div>
+                                      <div className="text-gray-500">Partner: {opportunity.partner}</div>
+                                      <div className={`text-${confidenceColor} font-medium`}>Confidence: {opportunity.confidence}</div>
                                       {opportunity.notes && (
                                         <div className="mt-2 pt-2 border-t border-gray-200">
                                           <div className="text-gray-500 text-xs italic">Latest Notes:</div>
@@ -1369,7 +1421,7 @@ export default function CustomerProgress() {
                               <div className="text-sm text-gray-600">
                                 {progress.toFixed(1)}% ({customer.adoptedUsers}/{customer.totalUsers} Copilot seats)
                               </div>
-                              {customer.opportunities.length < 4 && (
+                              {/* {customer.opportunities.length < 4 && (
                                 <button
                                   onClick={() => addOpportunity(customer.id)}
                                   className="text-sm text-[#0078D4] hover:text-[#106EBE] flex items-center"
@@ -1377,7 +1429,7 @@ export default function CustomerProgress() {
                                   <PlusIcon className="h-4 w-4 mr-1" />
                                   Add Opportunity
                                 </button>
-                              )}
+                              )} */}
                             </div>
                             {editingOpportunity.customerId === customer.id && (
                               <div className="mt-4 p-4 bg-gray-50 rounded-lg">
@@ -1463,25 +1515,25 @@ export default function CustomerProgress() {
                                     <div key={opportunity.id} className="flex justify-between items-center text-sm">
                                       <div className="flex items-center">
                                         <div className={`w-3 h-3 rounded-full ${OPPORTUNITY_COLORS[index]} mr-2`} />
-                                        <span className="text-gray-600">
+                                        <span className={isDarkMode ? "text-white" : "text-gray-600"}>
                                           {opportunity.id} - {opportunity.description} ({opportunity.seats} seats)
                                         </span>
                                         <span className="ml-2 text-[#FFB900] font-medium">
                                           ${dealSize.toLocaleString()} ARR
                                         </span>
-                                        <span className="ml-2 text-gray-500">
+                                        <span className={isDarkMode ? "text-white ml-2" : "text-gray-500 ml-2"}>
                                           | {opportunity.closeDate}
                                         </span>
                                         <span className={`ml-2 ${confidenceColor} font-medium`}>
                                           | {opportunity.confidence}
                                         </span>
                                       </div>
-                                      <button
+                                      {/* <button
                                         onClick={() => deleteOpportunity(customer.id, opportunity.id)}
                                         className="text-red-600 hover:text-red-700"
                                       >
                                         <TrashIcon className="h-4 w-4" />
-                                      </button>
+                                      </button> */}
                                     </div>
                                   );
                                 })}
@@ -1512,7 +1564,7 @@ export default function CustomerProgress() {
               return (
                 <div key={quarter} className="mb-8 last:mb-0">
                   <div className="flex items-center mb-4">
-                    <h2 className="text-3xl font-semibold text-red-600">
+                    <h2 className={isDarkMode ? "text-3xl font-semibold text-white" : "text-3xl font-semibold text-red-600"}>
                       {quarter}
                     </h2>
                     <span className="ml-4 text-xl font-medium text-red-600">
@@ -1551,11 +1603,14 @@ export default function CustomerProgress() {
                               return (
                                 <div key={opportunity.id} className="flex items-center text-sm ml-4">
                                   <div className="w-3 h-3 rounded-full bg-[#FFB900] mr-2" />
-                                  <span className="text-gray-600">
+                                  <span className={isDarkMode ? "text-white" : "text-gray-600"}>
                                     {opportunity.id} - {opportunity.description} ({opportunity.seats} seats)
                                   </span>
                                   <span className="ml-2 text-[#FFB900] font-medium">
                                     ${dealSize.toLocaleString()} ARR
+                                  </span>
+                                  <span className={isDarkMode ? "text-white ml-2" : "text-gray-500 ml-2"}>
+                                    | {opportunity.closeDate}
                                   </span>
                                   <span className={`ml-2 ${confidenceColor} font-medium`}>
                                     | {opportunity.confidence}
@@ -1577,7 +1632,7 @@ export default function CustomerProgress() {
               return (
                 <div key={quarter} className="mb-8 last:mb-0">
                   <div className="flex items-center mb-4">
-                    <h2 className="text-3xl font-semibold text-red-600">
+                    <h2 className={isDarkMode ? "text-3xl font-semibold text-white" : "text-3xl font-semibold text-red-600"}>
                       {quarter}
                     </h2>
                     <span className="ml-4 text-xl font-medium text-red-600">
@@ -1594,7 +1649,7 @@ export default function CustomerProgress() {
                     const potentialRevenue = calculatePotentialRevenue(customer.totalUsers, customer.adoptedUsers, customer.opportunities);
                     
                     return (
-                      <div key={customer.id} className="mb-6 last:mb-0">
+                      <div key={customer.id} className="mb-10 last:mb-0 pb-8 border-b border-gray-200 last:border-b-0">
                         {editingCustomer?.id === customer.id ? (
                           <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
@@ -1644,7 +1699,20 @@ export default function CustomerProgress() {
                         ) : (
                           <>
                             <div className="flex justify-between items-center mb-2">
-                              <h3 className="text-lg font-semibold text-[#0078D4]">{customer.name}</h3>
+                              <div className="flex items-center space-x-2">
+                                <div className="flex items-center space-x-2">
+                                  <h3 className="text-lg font-semibold text-[#0078D4]">{customer.name}</h3>
+                                  {customer.stakeholders && customer.stakeholders.length > 0 && (
+                                    <span className={isDarkMode ? "text-white" : "text-gray-500"}>
+                                      {customer.stakeholders.map((s, i) => (
+                                        <span key={i} className="ml-1 first:ml-0">
+                                          {s.name} ({s.role}){i !== customer.stakeholders.length - 1 && <span>,</span>}
+                                        </span>
+                                      ))}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
                               <div className="flex items-center space-x-4">
                                 <div className="text-right">
                                   <div className="text-sm text-gray-600">
@@ -1659,7 +1727,7 @@ export default function CustomerProgress() {
                                     +${potentialRevenue.toLocaleString()} potential ARR
                                   </div>
                                 </div>
-                                <button
+                                {/* <button
                                   onClick={() => handleEdit(customer)}
                                   className="text-gray-400 hover:text-[#0078D4]"
                                 >
@@ -1670,7 +1738,7 @@ export default function CustomerProgress() {
                                   className="text-gray-400 hover:text-[#F25022]"
                                 >
                                   <TrashIcon className="h-5 w-5" />
-                                </button>
+                                </button> */}
                               </div>
                             </div>
                             <div className="relative h-8 bg-gray-200 rounded-full overflow-visible flex">
@@ -1698,21 +1766,17 @@ export default function CustomerProgress() {
                                   >
                                     <div className="hidden group-hover:block absolute z-50 left-1/2 -translate-x-1/2 -top-2 transform -translate-y-full bg-white text-gray-900 text-xs rounded shadow-lg p-2 min-w-[200px]">
                                       <div className="font-semibold mb-1 text-[#FFB900]">{opportunity.id}</div>
-                                      <div className="text-gray-600">{opportunity.description}</div>
+                                      <div className={isDarkMode ? "text-white" : "text-gray-600"}>{opportunity.description}</div>
                                       <div className="mt-1">
-                                        <span className="text-[#FFB900] font-medium">${opportunityRevenue.toLocaleString()}</span>
+                                        <span className={isDarkMode ? "text-[#ffe066] font-medium" : "text-[#FFB900] font-medium"}>
+                                          ${opportunityRevenue.toLocaleString()}
+                                        </span>
                                         <span className="text-gray-500"> annual revenue</span>
                                       </div>
                                       <div className="text-gray-500 mb-2">{opportunity.seats} Copilot seats</div>
-                                      <div className="text-gray-500">
-                                        Close: {opportunity.closeDate}
-                                      </div>
-                                      <div className="text-gray-500">
-                                        Partner: {opportunity.partner}
-                                      </div>
-                                      <div className={`text-${confidenceColor} font-medium`}>
-                                        Confidence: {opportunity.confidence}
-                                      </div>
+                                      <div className={isDarkMode ? "text-white ml-2" : "text-gray-500 ml-2"}>{opportunity.closeDate}</div>
+                                      <div className="text-gray-500">Partner: {opportunity.partner}</div>
+                                      <div className={`text-${confidenceColor} font-medium`}>Confidence: {opportunity.confidence}</div>
                                       {opportunity.notes && (
                                         <div className="mt-2 pt-2 border-t border-gray-200">
                                           <div className="text-gray-500 text-xs italic">Latest Notes:</div>
@@ -1728,7 +1792,7 @@ export default function CustomerProgress() {
                               <div className="text-sm text-gray-600">
                                 {progress.toFixed(1)}% ({customer.adoptedUsers}/{customer.totalUsers} Copilot seats)
                               </div>
-                              {customer.opportunities.length < 4 && (
+                              {/* {customer.opportunities.length < 4 && (
                                 <button
                                   onClick={() => addOpportunity(customer.id)}
                                   className="text-sm text-[#0078D4] hover:text-[#106EBE] flex items-center"
@@ -1736,7 +1800,7 @@ export default function CustomerProgress() {
                                   <PlusIcon className="h-4 w-4 mr-1" />
                                   Add Opportunity
                                 </button>
-                              )}
+                              )} */}
                             </div>
                             {editingOpportunity.customerId === customer.id && (
                               <div className="mt-4 p-4 bg-gray-50 rounded-lg">
@@ -1822,25 +1886,25 @@ export default function CustomerProgress() {
                                     <div key={opportunity.id} className="flex justify-between items-center text-sm">
                                       <div className="flex items-center">
                                         <div className={`w-3 h-3 rounded-full ${OPPORTUNITY_COLORS[index]} mr-2`} />
-                                        <span className="text-gray-600">
+                                        <span className={isDarkMode ? "text-white" : "text-gray-600"}>
                                           {opportunity.id} - {opportunity.description} ({opportunity.seats} seats)
                                         </span>
                                         <span className="ml-2 text-[#FFB900] font-medium">
                                           ${dealSize.toLocaleString()} ARR
                                         </span>
-                                        <span className="ml-2 text-gray-500">
+                                        <span className={isDarkMode ? "text-white ml-2" : "text-gray-500 ml-2"}>
                                           | {opportunity.closeDate}
                                         </span>
                                         <span className={`ml-2 ${confidenceColor} font-medium`}>
                                           | {opportunity.confidence}
                                         </span>
                                       </div>
-                                      <button
+                                      {/* <button
                                         onClick={() => deleteOpportunity(customer.id, opportunity.id)}
                                         className="text-red-600 hover:text-red-700"
                                       >
                                         <TrashIcon className="h-4 w-4" />
-                                      </button>
+                                      </button> */}
                                     </div>
                                   );
                                 })}
